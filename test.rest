@@ -1,0 +1,8 @@
+# auth testing
+
+POST http://127.0.0.1:8000/signup 
+Content-Type: application/json
+
+{ "username": "elieSawmaawad", "first_name": "Elie", "last_name": "Sawma Awad", "password": "TestCase1!89", "email": "elie.sawmaawad@icloud.com"}
+
+###
