@@ -1,6 +1,7 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .models import Course, Major
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -45,3 +46,15 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         
         return user
+    
+class MajorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Major
+        fields = ['id', 'name', 'code']
+
+class CourseSerializer(serializers.ModelSerializer):
+    major = MajorSerializer()
+    
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'code', 'major']

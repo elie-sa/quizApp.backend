@@ -20,7 +20,7 @@ class Major(models.Model):
 class Course(models.Model):
     code = models.CharField(max_length=4)
     name = models.CharField(max_length=20)
-    major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name="major")
+    major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name="courses")
 
 class Notebook(models.Model):
     title = models.CharField(max_length = 30)
