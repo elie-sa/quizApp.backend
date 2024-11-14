@@ -8,7 +8,7 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from .models import EmailConfirmationToken
-from .serializers import UserSerializer
+from .serializers import PasswordChangeSerializer, UserSerializer
 from django.core.mail import send_mail
 from django.template.loader import get_template
 import pyotp
@@ -93,6 +93,42 @@ def login(request):
 
     return response
 
+# @api_view(['POST'])
+# def login(request):
+#     login_credential = request.data["login_credential"].strip()
+
+#     email_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+
+#     if re.match(email_pattern, login_credential):
+#         login_kind = "email"
+#         try:
+#             user = User.objects.get(email__iexact=login_credential)
+#         except:
+#             return Response(f"Invalid {login_kind} or password.", status=status.HTTP_400_BAD_REQUEST)
+#     else:
+#         login_kind = "email"
+#         try:
+#             user = User.objects.get(username=login_credential)
+#         except:
+#             return Response(f"Invalid {login_kind} or password.", status=status.HTTP_400_BAD_REQUEST)
+        
+#     if not user.profile.is_confirmed:
+#         return Response("Invalid login credentials. Email Verification is needed.", status=status.HTTP_403_FORBIDDEN)
+#     if not user.check_password(request.data['password']):
+#         return Response(f"Invalid {login_kind} or password.", status=status.HTTP_400_BAD_REQUEST)
+    
+#     refresh = RefreshToken.for_user(user)
+#     access_token = str(refresh.access_token)
+
+#     serializer = UserSerializer(user)
+
+#     response = Response({
+#         'access': access_token,
+#         'user': serializer.data
+#     })
+
+#     return response
+
 @api_view(['POST'])
 def logout(request):
     response = Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
@@ -145,7 +181,7 @@ def confirm_email_view(request):
         return render(request, template_name='confirm_email_view.html', context=data)
 
 @api_view(['POST'])
-def check_email(request):
+def forgot_password(request):
     try:
         email = request.data['email']
     except: 
@@ -158,12 +194,12 @@ def check_email(request):
     else:
         return Response("Error: The email address you entered could not be found.", status=status.HTTP_400_BAD_REQUEST)
     
+#After calling the forgot password (service)
 def send_otp(user):
     user.profile.generate_secret_key()
     totp = pyotp.TOTP(user.profile.secret_key, interval=60)
     otp = totp.now()
 
-    # Send the OTP via email
     send_mail(
         'Your OTP Code',
         f'Your OTP code is {otp}. It is valid for the next minute.',
@@ -193,19 +229,19 @@ def verify_otp_service(user_secret_key, otp):
     totp = pyotp.TOTP(user_secret_key, interval=60)
     return totp.verify(otp)
 
-# @api_view(['POST'])
-# def change_forgotten_password(request):
-#     serializer = PasswordChangeSerializer(data=request.data)
-#     if serializer.is_valid():
-#         email = serializer.validated_data['email']
-#         new_password = serializer.validated_data['new_password']
+@api_view(['POST'])
+def change_forgotten_password(request):
+    serializer = PasswordChangeSerializer(data=request.data)
+    if serializer.is_valid():
+        email = serializer.validated_data['email']
+        new_password = serializer.validated_data['new_password']
         
-#         user = User.objects.filter(email=email).first()
-#         if user:
-#             user.set_password(new_password)
-#             user.save()
-#             return Response("Password has been successfully changed.", status=status.HTTP_200_OK)
-#         else:
-#             return Response("User not found.", status=status.HTTP_400_BAD_REQUEST)
-#     else:
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(email=email).first()
+        if user:
+            user.set_password(new_password)
+            user.save()
+            return Response("Password has been successfully changed.", status=status.HTTP_200_OK)
+        else:
+            return Response("User not found.", status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
