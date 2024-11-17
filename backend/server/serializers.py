@@ -1,7 +1,7 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Course, Major, Profile
+from .models import Course, Major, Profile, Notebook, Team
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,6 +62,8 @@ class PasswordChangeSerializer(serializers.Serializer):
         user_serializer = UserSerializer()
         return user_serializer.validate_password(value)
        
+#General Serializers
+
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
@@ -74,5 +76,15 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = ['id', 'name', 'code', 'major']
 
+class TeamSerializer(serializers.ModelSerializer):
 
-        
+    class Meta:
+        model = Team
+        fields = ['name', 'creation_date', 'members']
+
+class NotebookSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Notebook
+        fields = ['title', 'color', 'rating', 'creation_date', 'user_creator', 'team_creator', 'bookmark_users', 'courses']
+

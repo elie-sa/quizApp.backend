@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, views_auth, admin
+from . import views, views_auth, views_notebook, views_teams, admin
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -17,4 +17,12 @@ urlpatterns = [
     # GET APIs
     path('majors', views.get_majors, name="get_majors"),
     path('courses', views.get_courses, name="get_courses"),
+
+    # Notebook Creation
+    path('user/createNotebook', views_notebook.user_create_notebook, name="user_create_notebook"),
+    path('team/createNotebook', views_notebook.team_create_notebook, name="team_create_notebook"),
+
+    # Teams
+    path('user/createTeam', views_teams.create_team, name="create_team"),
+    
 ]

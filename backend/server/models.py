@@ -24,8 +24,12 @@ class EmailConfirmationToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Team(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
+    creation_date = models.DateTimeField(auto_now_add=True)
     members = models.ManyToManyField(User, related_name="teams")
+
+    def __str__(self):
+        return self.name
 
 class Major(models.Model):
     code = models.CharField(max_length=4)
@@ -43,14 +47,14 @@ class Course(models.Model):
         return self.name
 
 class Notebook(models.Model):
-    title = models.CharField(max_length = 30)
+    title = models.CharField(max_length = 50)
     color = models.CharField(max_length=20)
-    rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)])
+    rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)], null = True, default=None)
     creation_date = models.DateTimeField(auto_now_add=True)
     user_creator = models.ForeignKey(User, null=True , on_delete=models.CASCADE, related_name="notebook")
     team_creator = models.ForeignKey(Team, null = True, on_delete=models.CASCADE, related_name="notebook")
     bookmark_users = models.ManyToManyField(User, related_name="bookmarked_notebooks")
-    related_course = models.ManyToManyField(Course, related_name="notebooks")
+    courses = models.ManyToManyField(Course, related_name="notebooks")
 
     def __str__(self):
         return self.title
