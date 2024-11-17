@@ -42,6 +42,7 @@ def signup(request):
 
         response = Response({
             'access': access_token,
+            'refresh': str(refresh),
             'user': serializer.data
         }, status=status.HTTP_201_CREATED)
 
@@ -88,46 +89,11 @@ def login(request):
 
     response = Response({
         'access': access_token,
+        'refresh': str(refresh),
         'user': serializer.data
     })
 
     return response
-
-# @api_view(['POST'])
-# def login(request):
-#     login_credential = request.data["login_credential"].strip()
-
-#     email_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-
-#     if re.match(email_pattern, login_credential):
-#         login_kind = "email"
-#         try:
-#             user = User.objects.get(email__iexact=login_credential)
-#         except:
-#             return Response(f"Invalid {login_kind} or password.", status=status.HTTP_400_BAD_REQUEST)
-#     else:
-#         login_kind = "email"
-#         try:
-#             user = User.objects.get(username=login_credential)
-#         except:
-#             return Response(f"Invalid {login_kind} or password.", status=status.HTTP_400_BAD_REQUEST)
-        
-#     if not user.profile.is_confirmed:
-#         return Response("Invalid login credentials. Email Verification is needed.", status=status.HTTP_403_FORBIDDEN)
-#     if not user.check_password(request.data['password']):
-#         return Response(f"Invalid {login_kind} or password.", status=status.HTTP_400_BAD_REQUEST)
-    
-#     refresh = RefreshToken.for_user(user)
-#     access_token = str(refresh.access_token)
-
-#     serializer = UserSerializer(user)
-
-#     response = Response({
-#         'access': access_token,
-#         'user': serializer.data
-#     })
-
-#     return response
 
 @api_view(['POST'])
 def logout(request):

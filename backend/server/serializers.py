@@ -15,7 +15,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     
 
 class UserSerializer(serializers.ModelSerializer):
-    phone_number = serializers.SerializerMethodField()
+    phone_number = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
@@ -28,20 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name': {'required': True},
         }
 
-    def validate(self, data):
-        required_fields = ['username', 'email', 'first_name', 'last_name', 'password']
-
-        for field in required_fields:
-            if field not in data or not data[field].strip():
-                raise serializers.ValidationError({field: f"{field.capitalize()} is required."})
-        
-        return data
-
-    def validate_username(self, value):
-        if ' ' in value:
-            raise serializers.ValidationError("Username should not contain spaces.")
-        return value
-    
     def validate_password(self, value):
         if len(value) < 8:
             raise serializers.ValidationError("Password must be at least 8 characters long.")
@@ -51,22 +37,21 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Password must contain at least one special character.")
         return value
 
-
     def create(self, validated_data):
-        profile_data = validated_data.pop('profile', {})
+        phone_number = validated_data.pop('phone_number', None)
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
         
-        Profile.objects.create(user=user, **profile_data)
+        Profile.objects.create(user=user, phone_number=phone_number)
         return user
-    
-    def get_phone_number(self, obj):
-        phone_number = obj.profile.phone_number
-        if phone_number:
-            return phone_number
-        return None
-    
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['phone_number'] = (
+            instance.profile.phone_number if hasattr(instance, 'profile') else None
+        )
+        return representation
 
 # Forgot Password feature
 class PasswordChangeSerializer(serializers.Serializer):
@@ -88,5 +73,6 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['id', 'name', 'code', 'major']
+
 
         
