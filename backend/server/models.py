@@ -29,12 +29,18 @@ class Team(models.Model):
 
 class Major(models.Model):
     code = models.CharField(max_length=4)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 class Course(models.Model):
     code = models.CharField(max_length=4)
     name = models.CharField(max_length=20)
     major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name="courses")
+
+    def __str__(self):
+        return self.name
 
 class Notebook(models.Model):
     title = models.CharField(max_length = 30)
@@ -44,6 +50,10 @@ class Notebook(models.Model):
     user_creator = models.ForeignKey(User, null=True , on_delete=models.CASCADE, related_name="notebook")
     team_creator = models.ForeignKey(Team, null = True, on_delete=models.CASCADE, related_name="notebook")
     bookmark_users = models.ManyToManyField(User, related_name="bookmarked_notebooks")
+    related_course = models.ManyToManyField(Course, related_name="notebooks")
+
+    def __str__(self):
+        return self.title
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ratings")
@@ -55,6 +65,9 @@ class FlashDeck(models.Model):
     title = models.CharField(max_length=20)
     creation_date = models.DateTimeField(auto_now_add=True)
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name="flashdecks")
+
+    def __str__(self):
+        return self.title
 
 class FlashCard(models.Model):
     title = models.CharField(max_length=20)
@@ -69,12 +82,18 @@ class Note(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name="notes")
 
+    def __str__(self):
+        return self.title
+
 class Quiz(models.Model):
     title = models.CharField(max_length=20)
     creation_date = models.DateTimeField(auto_now_add=True)
     difficulty = models.CharField(max_length=20)
     questionTime = models.PositiveIntegerField()
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name="quizzes")
+
+    def __str__(self):
+        return self.title
 
 class BooleanQuestion(models.Model):
     question = models.CharField(max_length=20)
