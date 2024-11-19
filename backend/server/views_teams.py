@@ -16,6 +16,10 @@ def create_team(request):
     user = request.user
     name = request.data.get('name')
 
+    testTeam = Team.objects.filter(name=name)
+    if testTeam.exists():
+        return Response({"error": f"Team with  name {name} already exists. Please provide a unique team name."}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         team = Team.objects.create(name=name)
         team.members.add(user)
@@ -24,3 +28,11 @@ def create_team(request):
     
     serializer = TeamSerializer(team)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_my_teams(request):
+    serializer = TeamSerializer(request.user.teams, many=True)
+    return Response(serializer.data, status.HTTP_200_OK)
+

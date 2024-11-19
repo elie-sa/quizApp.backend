@@ -43,15 +43,3 @@ def get_courses(request):
         course_data.append(course_info)
 
     return Response(course_data)
-
-@api_view(['GET'])
-def get_notebooks(request):
-    search_entry = request.query_params.get('search_entry', None)
-    major_id = request.query_params.get('major_id', None)
-    course_id = request.query_params.get('course_id', None)
-
-    query = Q()
-    if search_entry:
-        query &= Q(title__icontains=search_entry)
-    if major_id:
-        query &= Q()

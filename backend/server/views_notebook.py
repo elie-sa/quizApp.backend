@@ -75,3 +75,47 @@ def team_create_notebook(request):
     serializer = NotebookSerializer(notebook)
     return Response(serializer.data, status = status.HTTP_201_CREATED)
         
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_notebooks(request):
+    search_entry = request.query_params.get("search_entry", None)
+    major_id = request.query_params.get('major_id', None)
+    course_id = request.query_params.get('course_id', None)
+
+    if major_id and course_id:
+        return Response({"error": "Can't search according to major and course simultaneously."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    query = Q()
+    if search_entry:
+        query &= Q(title__icontains=search_entry)
+    if course_id: 
+        query &= Q(courses__id=course_id)
+    if major_id:
+        query &= Q(courses__major__id=major_id)
+
+    notebooks = Notebook.objects.filter(query).order_by('title')
+    return Response(NotebookSerializer(notebooks, many=True).data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_team_notebooks(request):
+    team_id = request.query_params.get('team_id', None)
+
+    if not team_id:
+        return Response({"error": "team_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        team = Team.objects.get(id=team_id)
+    except Team.DoesNotExist:
+        return Response({"error": "Invalid team_id provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not team.members.filter(id=request.user.id).exists():
+        return Response({"error": "Unauthorized access. User is not part of this team."}, status=status.HTTP_403_FORBIDDEN)
+
+    notebooks = Notebook.objects.filter(team_creator=team.id)
+
+    serializer = NotebookSerializer(notebooks, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
