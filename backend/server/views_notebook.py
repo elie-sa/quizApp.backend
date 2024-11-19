@@ -19,7 +19,7 @@ def user_create_notebook(request):
 
     testNotebook = Notebook.objects.filter(user_creator = user, title = title)
     if testNotebook:
-        return Response({"title": "A notebook with this title already exists. Please choose a different title. "})
+        return Response({"title": "A notebook with this title already exists. Please choose a different title."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         notebook = Notebook.objects.create(
@@ -57,7 +57,7 @@ def team_create_notebook(request):
 
     testNotebook = Notebook.objects.filter(user_creator = user, title = title)
     if testNotebook:
-        return Response({"title": "A notebook with this title already exists. Please choose a different title. "})
+        return Response({"title": "A notebook with this title already exists. Please choose a different title."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         notebook = Notebook.objects.create(
