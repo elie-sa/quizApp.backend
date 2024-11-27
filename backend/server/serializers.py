@@ -86,7 +86,7 @@ class NotebookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notebook
-        fields = ['id', 'title', 'color', 'rating', 'creation_date', 'user_creator', 'team_creator', 'bookmark_users', 'courses']
+        fields = ['id', 'title', 'color', 'rating', 'creation_date', 'user_creator', 'team_creator', 'bookmark_users', 'courses', 'public_access']
 
 class TeamSerializer(serializers.ModelSerializer):
 

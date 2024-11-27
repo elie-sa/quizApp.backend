@@ -40,7 +40,7 @@ class Major(models.Model):
 
 class Course(models.Model):
     code = models.CharField(max_length=4)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name="courses")
 
     def __str__(self):
@@ -55,6 +55,7 @@ class Notebook(models.Model):
     team_creator = models.ForeignKey(Team, null = True, on_delete=models.CASCADE, related_name="notebook")
     bookmark_users = models.ManyToManyField(User, related_name="bookmarked_notebooks")
     courses = models.ManyToManyField(Course, related_name="notebooks")
+    public_access = models.BooleanField(default = False)
 
     def __str__(self):
         return self.title

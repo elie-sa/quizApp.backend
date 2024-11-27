@@ -23,7 +23,8 @@ urlpatterns = [
     path('user/createNotebook', views_notebook.user_create_notebook, name="user_create_notebook"),
     path('team/createNotebook', views_notebook.team_create_notebook, name="team_create_notebook"),
     #GET
-    path('user/notebooks', views_notebook.get_notebooks, name="get_notebooks"),
+    path('user/notebooks', views_notebook.get_public_notebooks, name="get_public_notebooks"),
+    path('user/myNotebooks', views_notebook.get_my_notebooks, name="get_my_notebooks"),
     path('team/notebooks', views_notebook.get_team_notebooks, name="get_team_notebooks"),
 
     # Teams

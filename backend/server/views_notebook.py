@@ -16,16 +16,18 @@ def user_create_notebook(request):
     title = request.data.get('title')
     color = request.data.get('color')
     course_ids = request.data.get('courses', [])
+    is_public = request.data.get('is_public', False)
 
     testNotebook = Notebook.objects.filter(user_creator = user, title = title)
     if testNotebook:
-        return Response({"title": "A notebook with this title already exists. Please choose a different title."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"title": "You already have a notebook with this name. Please choose a different name."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         notebook = Notebook.objects.create(
             title = title,
             color = color,
-            user_creator = user
+            user_creator = user,
+            public_access = is_public
     )
     except:
         return Response("Invalid/Missing Request", status=status.HTTP_400_BAD_REQUEST)
@@ -57,7 +59,7 @@ def team_create_notebook(request):
 
     testNotebook = Notebook.objects.filter(user_creator = user, title = title)
     if testNotebook:
-        return Response({"title": "A notebook with this title already exists. Please choose a different title."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"title": "This team already has a notebook with this name. Please choose a different name."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         notebook = Notebook.objects.create(
@@ -78,7 +80,7 @@ def team_create_notebook(request):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, JWTAuthentication])
 @permission_classes([IsAuthenticated])
-def get_notebooks(request):
+def get_public_notebooks(request):
     search_entry = request.query_params.get("search_entry", None)
     major_id = request.query_params.get('major_id', None)
     course_id = request.query_params.get('course_id', None)
@@ -93,6 +95,31 @@ def get_notebooks(request):
         query &= Q(courses__id=course_id)
     if major_id:
         query &= Q(courses__major__id=major_id)
+
+    query &= Q(public_access=True)
+
+    notebooks = Notebook.objects.filter(query).order_by('title')
+    return Response(NotebookSerializer(notebooks, many=True).data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_my_notebooks(request):
+    search_entry = request.query_params.get("search_entry", None)
+    major_id = request.query_params.get('major_id', None)
+    course_id = request.query_params.get('course_id', None)
+
+    if major_id and course_id:
+        return Response({"error": "Can't search according to major and course simultaneously."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    query = Q()
+    if search_entry:
+        query &= Q(title__icontains=search_entry)
+    if course_id: 
+        query &= Q(courses__id=course_id)
+    if major_id:
+        query &= Q(courses__major__id=major_id)
+    query &= Q(user_creator=request.user)
 
     notebooks = Notebook.objects.filter(query).order_by('title')
     return Response(NotebookSerializer(notebooks, many=True).data, status=status.HTTP_200_OK)
