@@ -133,7 +133,15 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN': False,  # Optional: Update the last login field on token refresh
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # For secure connection
+EMAIL_HOST_USER = 'studytron01@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'your-email-password'  # Replace with your Gmail app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 load_dotenv()
@@ -150,8 +158,6 @@ STORAGES = {
         'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
 }
-
-DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
