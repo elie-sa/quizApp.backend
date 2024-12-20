@@ -119,3 +119,18 @@ class FlashCardSerializer(serializers.ModelSerializer):
 
     def __str__(self):
         return self.name
+    
+# class FileUploadSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = FileUpload
+#         fields = ('file',)
+
+#     def create(self, validated_data):
+#         request = self.context.get('request')
+#         user = request.user if request else None
+
+#         if not user:
+#             raise serializers.ValidationError("User must be authenticated to upload a file.")
+
+#         file_upload = FileUpload.objects.create(user=user, **validated_data)
+#         return file_upload
