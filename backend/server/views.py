@@ -43,3 +43,8 @@ def get_courses(request):
         course_data.append(course_info)
 
     return Response(course_data)
+
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'upload_note.html')

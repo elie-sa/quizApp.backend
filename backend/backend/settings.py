@@ -1,7 +1,15 @@
 from datetime import timedelta
 from pathlib import Path
+import environ
+
+from dotenv import load_dotenv
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env(
+    DEBUG = (bool, False)
+)
+environ.Env.read_env(BASE_DIR / '.env')
 
 SECRET_KEY = 'django-insecure-**o*^eowj=gcr&rb49)_t*e*-xyu=&6n22%%sbamzh*&ey0a6d'
 
@@ -26,6 +34,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'server',
     'rest_framework_simplejwt.token_blacklist',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -126,11 +135,26 @@ SIMPLE_JWT = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
-AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
-AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
-AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
+STORAGES = {
+    'default': {
+        'BACKEND': 'storages.backends.azure_storage.AzureStorage',
+        'OPTIONS': {
+            'timeout': 20,
+            'expiration_secs': 500,
+        },
+    },
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    },
+}
+
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+
+AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = env("AZURE_CONTAINER")
+
+

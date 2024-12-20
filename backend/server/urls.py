@@ -51,6 +51,13 @@ urlpatterns = [
     path('deleteQuiz', views_elements.delete_quiz, name = "delete_quiz"),
     path('quiz/questions', views_elements.get_quiz_questions, name = "get_quiz_questions"),
 
+    # Notes
+    path('create_note/', views_elements.create_note, name='create_note'),
+    path('notes/delete', views_elements.delete_note, name = "delete_note"),
+
+    # Testing
+    path('', views.index, name='index'),
+
     # Rating system
     
 ]

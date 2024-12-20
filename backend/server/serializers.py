@@ -1,7 +1,7 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Course, Major, Profile, Notebook, Team, FlashDeck, FlashCard
+from .models import Course, Major, Profile, Notebook, Team, FlashDeck, FlashCard, Note
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -120,17 +120,7 @@ class FlashCardSerializer(serializers.ModelSerializer):
     def __str__(self):
         return self.name
     
-# class FileUploadSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = FileUpload
-#         fields = ('file',)
-
-#     def create(self, validated_data):
-#         request = self.context.get('request')
-#         user = request.user if request else None
-
-#         if not user:
-#             raise serializers.ValidationError("User must be authenticated to upload a file.")
-
-#         file_upload = FileUpload.objects.create(user=user, **validated_data)
-#         return file_upload
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ['title', 'file_link', 'creation_date', 'notebook']

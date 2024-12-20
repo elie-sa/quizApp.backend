@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Course, Major, Notebook, Rating, Team, FlashDeck, FlashCard, Note, Quiz, McqQuestion, McqAnswer, BooleanQuestion
 from django.db.models import Q
-from .serializers import NotebookSerializer, FlashCardSerializer
+from .serializers import NotebookSerializer, FlashCardSerializer, NoteSerializer
 from rest_framework import status
 
 # Flashdeck
@@ -102,19 +102,13 @@ def get_elements(request):
     quizzes_data = [
         {
             "id": quiz.id,
-            "name": quiz.name,
-            "time": quiz.questiontime
+            "name": quiz.title,
+            "time": quiz.questionTime
         }
         for quiz in quizzes
     ]
 
-    notes_data = [
-        {
-            "id": note.id,
-            "title": note.title
-        }
-        for note in notes
-    ]
+    notes_data = NoteSerializer(notes, many=True).data
 
     response_data = {
         "FlashDecks": flashdecks_data,
@@ -318,3 +312,31 @@ def get_quiz_questions(request):
 
     return Response(all_questions, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+# @authentication_classes([SessionAuthentication, JWTAuthentication])
+# @permission_classes([IsAuthenticated])
+def create_note(request):
+    if request.method == 'POST':
+        serializer = NoteSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            note = serializer.save()
+
+            print("File URL:", note.file_link.url) 
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_note(request):
+    note_id = request.query_params.get('note_id')
+    try:
+        note = Note.objects.get(pk = note_id)
+    except:
+        return Response({"error": "note_id provided is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    note.delete()
+    return Response({"message": "Note deleted successfully"}, status.HTTP_204_NO_CONTENT)

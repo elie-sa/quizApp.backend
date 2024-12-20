@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Note</title>
+</head>
+<body>
+    <h1>Upload Note</h1>
+    <form id="note-form" action="/create_note/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label for="notebook_id">Notebook ID:</label>
+        <input type="text" id="notebook_id" name="notebook" placeholder="Enter notebook ID" required><br><br>
+        
+        <label for="title">Note Title:</label>
+        <input type="text" id="title" name="title" placeholder="Enter note title" required><br><br>
+        
+        <label for="file">Upload File:</label>
+        <input type="file" id="file" name="file_link" required><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

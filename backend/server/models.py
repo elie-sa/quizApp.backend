@@ -86,12 +86,12 @@ class FlashCard(models.Model):
 
 class Note(models.Model):
     title = models.CharField(max_length=50)
-    file_link = models.CharField(max_length=100)
+    file_link = models.FileField(upload_to='notes/')
     creation_date = models.DateTimeField(auto_now_add=True)
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name="notes")
 
     def __str__(self):
-        return self.title
+        return f"{self.title}: {self.id}"
 
 class Quiz(models.Model):
     title = models.CharField(max_length=20)
