@@ -122,7 +122,7 @@ def send_confirmation_email(email, token_id, user_id, access_token):
         subject='Please confirm your email',
         message=message,
         recipient_list=[email],
-        from_email="e.sawmaawad@gmail.com",
+        from_email="studytron01@gmail.com",
         fail_silently=False
     )
   
@@ -169,7 +169,7 @@ def send_otp(user):
     send_mail(
         'Your OTP Code',
         f'Your OTP code is {otp}. It is valid for the next minute.',
-        "e.sawmaawad@gmail.com",
+        "studytron01@gmail.com",
         [user.email],
         fail_silently=False,
     )

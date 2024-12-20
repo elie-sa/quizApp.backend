@@ -123,4 +123,4 @@ class FlashCardSerializer(serializers.ModelSerializer):
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ['title', 'file_link', 'creation_date', 'notebook']
+        fields = ['id','title', 'file_link', 'creation_date', 'notebook']

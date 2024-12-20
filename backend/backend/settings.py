@@ -140,7 +140,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # For secure connection
 EMAIL_HOST_USER = 'studytron01@gmail.com'  # Replace with your Gmail address
-EMAIL_HOST_PASSWORD = 'your-email-password'  # Replace with your Gmail app password
+EMAIL_HOST_PASSWORD = 'jnQ4wr2;pPgw'  # Replace with your Gmail app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
