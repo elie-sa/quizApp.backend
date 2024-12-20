@@ -43,5 +43,11 @@ urlpatterns = [
     path('notebook/elements', views_elements.get_elements, name="get_elements"),
     path('flashdeck/flashcards', views_elements.get_flashcards, name = "get_flashcards"),
 
-    
+    # Quizzes
+    path('createQuiz', views_elements.create_quiz, name = "create_quiz"),
+    path('quiz/createMCQ', views_elements.create_mcq_question, name = "create_mcq_question"),
+    path('quiz/createTorF', views_elements.create_boolean_question, name = "create_boolean_questions"),
+    path('quiz/deleteQuestion', views_elements.delete_question, name = "delete_question"),
+    path('deleteQuiz', views_elements.delete_quiz, name = "delete_quiz"),
+    path('quiz/questions', views_elements.get_quiz_questions, name = "get_quiz_questions"),
 ]

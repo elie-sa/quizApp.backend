@@ -129,6 +129,7 @@ def get_my_notebooks(request):
 @permission_classes([IsAuthenticated])
 def get_team_notebooks(request):
     team_id = request.query_params.get('team_id', None)
+    search_entry = request.query_params.get('search_entry', None)
 
     if not team_id:
         return Response({"error": "team_id is required."}, status=status.HTTP_400_BAD_REQUEST)
@@ -141,7 +142,7 @@ def get_team_notebooks(request):
     if not team.members.filter(id=request.user.id).exists():
         return Response({"error": "Unauthorized access. User is not part of this team."}, status=status.HTTP_403_FORBIDDEN)
 
-    notebooks = Notebook.objects.filter(team_creator=team.id)
+    notebooks = Notebook.objects.filter(team_creator=team.id, title__icontains=search_entry)
 
     serializer = NotebookSerializer(notebooks, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -169,9 +170,12 @@ def user_bookmark_notebook(request):
 @permission_classes([IsAuthenticated])
 def get_bookmarked_notebooks(request):
     user = request.user
-    notebooks = Notebook.objects.filter(bookmark_users=user)
+    search_entry = request.query_params.get('search_entry')
+    notebooks = Notebook.objects.filter(bookmark_users=user, title__icontains=search_entry)
     
     serializer = NotebookSerializer(notebooks, many = True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
     

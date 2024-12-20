@@ -111,7 +111,6 @@ class BooleanQuestion(models.Model):
 
 class McqQuestion(models.Model):
     question = models.CharField(max_length=20)
-    has_multiple_answers = models.BooleanField()
     points = models.FloatField()
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="mcq_questions")
 

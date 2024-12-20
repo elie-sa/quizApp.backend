@@ -88,7 +88,13 @@ class NotebookSerializer(serializers.ModelSerializer):
         model = Notebook
         fields = ['id', 'title', 'color', 'rating', 'creation_date', 'user_creator', 'team_creator', 'bookmark_users', 'courses', 'public_access']
 
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name'] 
+
 class TeamSerializer(serializers.ModelSerializer):
+    members = MemberSerializer(many=True)
 
     class Meta:
         model = Team
@@ -101,7 +107,7 @@ class FlashDeckSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlashDeck
-        fields = ['title']
+        fields = ['id', 'title']
         
     def __str__(self):
         return self.name
@@ -109,7 +115,7 @@ class FlashDeckSerializer(serializers.ModelSerializer):
 class FlashCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlashCard
-        fields = ['title', 'question', 'answer', 'difficulty']
+        fields = ['id', 'title', 'question', 'answer', 'difficulty']
 
     def __str__(self):
         return self.name
