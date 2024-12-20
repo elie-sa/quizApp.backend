@@ -21,14 +21,14 @@ def create_flashdeck(request):
         return Response({"error": "A flashdeck with this name already exists."}, status = status.HTTP_400_BAD_REQUEST)
 
     try:
-        FlashDeck.objects.create(
+        flashdeck = FlashDeck.objects.create(
             title = title,
             notebook = Notebook.objects.get(id = notebook_id)
         )
     except:
         return Response("Invalid body parameters.")
     
-    return Response(f"Successfully created flashdeck: {title}.", status=status.HTTP_201_CREATED)
+    return Response({"flashdeck_id": flashdeck.pk}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
 @authentication_classes([SessionAuthentication, JWTAuthentication])
