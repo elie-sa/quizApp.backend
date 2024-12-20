@@ -18,7 +18,7 @@ def create_flashdeck(request):
 
     duplicateFlashDecks = FlashDeck.objects.filter(title = title, notebook = Notebook.objects.get(id = notebook_id))
     if duplicateFlashDecks:
-        return Response("A flashdeck with this name already exists.", status = status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "A flashdeck with this name already exists."}, status = status.HTTP_400_BAD_REQUEST)
 
     try:
         FlashDeck.objects.create(
@@ -155,7 +155,7 @@ def create_quiz(request):
 
     quizzes = Quiz.objects.filter(title=request.data['title'])
     if quizzes:
-        return Response("The quiz name you provided already exists", status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error":"The quiz name you provided already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         Quiz.objects.create(

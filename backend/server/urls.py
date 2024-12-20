@@ -50,4 +50,6 @@ urlpatterns = [
     path('quiz/deleteQuestion', views_elements.delete_question, name = "delete_question"),
     path('deleteQuiz', views_elements.delete_quiz, name = "delete_quiz"),
     path('quiz/questions', views_elements.get_quiz_questions, name = "get_quiz_questions"),
+
+    
 ]
