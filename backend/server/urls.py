@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, views_auth, views_notebook, views_teams, admin
+from . import views, views_auth, views_notebook, views_teams, views_elements, admin
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -21,14 +21,27 @@ urlpatterns = [
     # Notebook APIs
     #POST
     path('user/createNotebook', views_notebook.user_create_notebook, name="user_create_notebook"),
+    path('user/bookmarkNotebook', views_notebook.user_bookmark_notebook, name = "user_bookmark_notebook"),
     path('team/createNotebook', views_notebook.team_create_notebook, name="team_create_notebook"),
     #GET
     path('user/notebooks', views_notebook.get_public_notebooks, name="get_public_notebooks"),
     path('user/myNotebooks', views_notebook.get_my_notebooks, name="get_my_notebooks"),
-    path('team/notebooks', views_notebook.get_team_notebooks, name="get_team_notebooks"),
+    path('user/bookmarkedNotebooks', views_notebook.get_bookmarked_notebooks, name="get_bookmarked_notebooks"), 
+    path('team/notebooks', views_notebook.get_team_notebooks, name="get_team_notebooks"),  
 
     # Teams
     path('user/createTeam', views_teams.create_team, name="create_team"),
     path('user/teams', views_teams.get_my_teams, name="get_my_teams"),
+
+    # Elements
+    path('createFlashDeck', views_elements.create_flashdeck, name="create_flashdeck"),
+    path('deleteFlashDeck/<flashdeck_id>', views_elements.delete_flashdeck, name="delete_flashdeck"),
+    path('createFlashCard', views_elements.create_flashcard, name="create_flashcard"),
+    path('deleteFlashCard/<flashcard_id>', views_elements.delete_flashcard, name="delete_flashcard"),
+
+    # GET
+    path('notebook/elements', views_elements.get_elements, name="get_elements"),
+    path('flashdeck/flashcards', views_elements.get_flashcards, name = "get_flashcards"),
+
     
 ]

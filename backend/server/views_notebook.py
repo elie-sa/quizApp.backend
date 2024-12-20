@@ -146,3 +146,32 @@ def get_team_notebooks(request):
     serializer = NotebookSerializer(notebooks, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def user_bookmark_notebook(request):
+    user = request.user
+    notebook_id = request.data.get('notebook_id')
+
+    try:
+        notebook = Notebook.objects.get(id = notebook_id)
+    except:
+        return Response({"error": "Invalid notebook id provided."}, status = status.HTTP_400_BAD_REQUEST)
+    
+    if notebook.public_access is True:
+        notebook.bookmark_users.add(user)
+        return Response("Notebook successfully bookmarked", status = status.HTTP_201_CREATED)
+    
+    return Response({"error": "The notebook you provided is private."}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_bookmarked_notebooks(request):
+    user = request.user
+    notebooks = Notebook.objects.filter(bookmark_users=user)
+    
+    serializer = NotebookSerializer(notebooks, many = True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+    

@@ -72,18 +72,21 @@ class FlashDeck(models.Model):
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name="flashdecks")
 
     def __str__(self):
-        return self.title
+        return f"{self.title}: {self.id}"
 
 class FlashCard(models.Model):
     title = models.CharField(max_length=20)
-    question = models.CharField(max_length=20)
-    answer = models.CharField(max_length=20, blank=False)
+    question = models.CharField(max_length=400)
+    answer = models.CharField(max_length=400, blank=False)
     difficulty = models.CharField(max_length=20)
     deck = models.ForeignKey(FlashDeck, on_delete=models.CASCADE, related_name="flashcards")
 
+    def __str__(self):
+        return f"{self.title}: {self.id}"
+
 class Note(models.Model):
-    title = models.CharField(max_length=20)
-    file_link = models.CharField(max_length=20)
+    title = models.CharField(max_length=50)
+    file_link = models.CharField(max_length=100)
     creation_date = models.DateTimeField(auto_now_add=True)
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name="notes")
 

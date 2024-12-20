@@ -1,7 +1,7 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Course, Major, Profile, Notebook, Team
+from .models import Course, Major, Profile, Notebook, Team, FlashDeck, FlashCard
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -93,6 +93,23 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ['id', 'name', 'creation_date', 'members']
+
+    def __str__(self):
+        return self.name
+    
+class FlashDeckSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FlashDeck
+        fields = ['title']
+        
+    def __str__(self):
+        return self.name
+    
+class FlashCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FlashCard
+        fields = ['title', 'question', 'answer', 'difficulty']
 
     def __str__(self):
         return self.name
