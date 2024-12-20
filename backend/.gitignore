@@ -1,3 +1,4 @@
 db.sqlite3
 server/migrations
 server/__pycache__
+.env

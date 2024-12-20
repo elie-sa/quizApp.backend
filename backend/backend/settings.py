@@ -125,3 +125,12 @@ SIMPLE_JWT = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")

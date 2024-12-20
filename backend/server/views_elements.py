@@ -40,7 +40,7 @@ def delete_flashdeck(request, flashdeck_id):
         return Response("Invalid flashdeck_id provided", status=status.HTTP_400_BAD_REQUEST)
 
     flashdeck.delete()
-    return Response("The flashdeck has been successfully deleted.", status = status.HTTP_204_NO_CONTENT)
+    return Response({"flashdeck_id": flashdeck.pk}, status = status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, JWTAuthentication])
@@ -317,3 +317,4 @@ def get_quiz_questions(request):
     shuffle(all_questions)
 
     return Response(all_questions, status=status.HTTP_200_OK)
+
