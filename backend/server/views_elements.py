@@ -152,7 +152,7 @@ def create_quiz(request):
         return Response({"error":"The quiz name you provided already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        Quiz.objects.create(
+        quiz = Quiz.objects.create(
             title = request.data['title'],
             questionTime = request.data['time'],
             difficulty = request.data['difficulty'],
@@ -161,7 +161,7 @@ def create_quiz(request):
     except:
         return Response({"error":"Invalid body parameters provided."}, status = status.HTTP_400_BAD_REQUEST)
     
-    return Response({"message": "Successfully created quiz."}, status=status.HTTP_200_OK)
+    return Response({"id": quiz.pk}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, JWTAuthentication])

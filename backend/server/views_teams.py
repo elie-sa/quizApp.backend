@@ -81,6 +81,8 @@ def add_team_member(request):
 
     return Response("Sent invitation successfully", status=status.HTTP_200_OK)
 
+from django.shortcuts import render
+
 @api_view(['GET'])
 def add_service(request):
     user_id = request.query_params.get('user_id')
@@ -89,7 +91,7 @@ def add_service(request):
     user = User.objects.get(id=user_id)
     team.members.add(user)
 
-    return Response("Successfully Added User", status=status.HTTP_200_OK)
+    return render(request, 'team_joining.html')
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])

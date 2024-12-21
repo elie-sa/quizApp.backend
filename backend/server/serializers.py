@@ -1,7 +1,7 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Course, Major, Profile, Notebook, Team, FlashDeck, FlashCard, Note
+from .models import Course, Major, Profile, Notebook, Team, FlashDeck, FlashCard, Note, Quiz
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -135,3 +135,4 @@ class ChangePasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError("The new passwords do not match.")
         return data
+    
