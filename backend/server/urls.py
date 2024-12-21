@@ -36,6 +36,8 @@ urlpatterns = [
     path('user/myNotebooks', views_notebook.get_my_notebooks, name="get_my_notebooks"),
     path('user/bookmarkedNotebooks', views_notebook.get_bookmarked_notebooks, name="get_bookmarked_notebooks"), 
     path('team/notebooks', views_notebook.get_team_notebooks, name="get_team_notebooks"),  
+    #DELETE
+    path('user/deleteNotebook', views_notebook.delete_user_notebook, name = "delete_user_notebook"),
 
     # Teams
     path('user/createTeam', views_teams.create_team, name="create_team"),

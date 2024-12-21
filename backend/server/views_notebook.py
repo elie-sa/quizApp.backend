@@ -203,5 +203,20 @@ def get_bookmarked_notebooks(request):
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_user_notebook(request):
+    user = request.user
+    notebook_id = request.query_params.get('notebook_id')
 
+    try:
+        notebook = Notebook.objects.get(id=notebook_id)
+    except:
+        return Response({"error": "Invalid notebook id provided"}, status=status.HTTP_400_BAD_REQUEST)
     
+    if notebook.user_creator == user:
+        notebook.delete()
+        return Response({"messsage": "Notebook successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
+    
+    return Response({"error": "The user is not the notebook owner"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
