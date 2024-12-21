@@ -54,7 +54,7 @@ def add_team_member(request):
         return Response({"Invalid JSON Format": "user_id or team_id missing"})
     
     try:
-        Team.objects.get(id=team_id)
+        team = Team.objects.get(id=team_id)
     except:
         return Response("Invalid team_id provided.")
 
@@ -66,7 +66,8 @@ def add_team_member(request):
     data = {
         'user_id': user_id,
         'user_name': f"{user.first_name} {user.last_name}",
-        'team_id': team_id
+        'team_id': team_id,
+        'team_name': team.name
     }
 
     message = get_template('send_team_request.txt').render(data)
@@ -77,3 +78,28 @@ def add_team_member(request):
         from_email="e.sawmaawad@gmail.com",
         fail_silently=False
     )
+
+    return Response("Sent invitation successfully", status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def add_service(request):
+    user_id = request.query_params.get('user_id')
+    team_id = request.query_params.get('team_id')
+    team = Team.objects.get(id=team_id)
+    user = User.objects.get(id=user_id)
+    team.members.add(user)
+
+    return Response("Successfully Added User", status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_team_members(request):
+    team_id = request.query_params.get('team_id')
+    try:
+        team = Team.objects.get(id=team_id)
+    except:
+        return Response({"error": "Invalid team_id provided."})
+    
+    serializer = TeamSerializer(team)
+    return Response(serializer.data, status=status.HTTP_200_OK)

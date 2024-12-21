@@ -165,6 +165,20 @@ def user_bookmark_notebook(request):
     
     return Response({"error": "The notebook you provided is private."}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def user_unboomark_notebook(request):
+    notebook_id = request.query_params.get('notebook_id')
+    try:
+        notebook = Notebook.objects.get(id = notebook_id)
+    except:
+        return Response({"error": "Invalid notebook_id provided"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    notebook.bookmark_users.remove(request.user)
+
+    return Response("Successfully unbookmarked notebook.", status=status.HTTP_204_NO_CONTENT)
+
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, JWTAuthentication])
 @permission_classes([IsAuthenticated])

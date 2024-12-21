@@ -9,6 +9,7 @@ urlpatterns = [
     path('login', views_auth.login, name="login"),
     path('user/confirmEmail', views_auth.confirm_email_view, name="confirm_email_view"),
     path('user/sendConfirmationEmail', views_auth.create_email_token, name = "send_confirmation_email"),
+    path('user/getInfo', views_auth.get_user_info, name="get_user_info"),
     # Forgot Password APIs
     path('user/forgotPassword', views_auth.forgot_password, name="check_email"),
     path('user/verifyOtp', views_auth.verify_otp, name="verify_otp"),
@@ -22,6 +23,7 @@ urlpatterns = [
     #POST
     path('user/createNotebook', views_notebook.user_create_notebook, name="user_create_notebook"),
     path('user/bookmarkNotebook', views_notebook.user_bookmark_notebook, name = "user_bookmark_notebook"),
+    path('user/unbookmarkNotebook', views_notebook.user_unboomark_notebook, name="user_unbookmark_notebook"),
     path('team/createNotebook', views_notebook.team_create_notebook, name="team_create_notebook"),
     #GET
     path('user/notebooks', views_notebook.get_public_notebooks, name="get_public_notebooks"),
@@ -32,6 +34,10 @@ urlpatterns = [
     # Teams
     path('user/createTeam', views_teams.create_team, name="create_team"),
     path('user/teams', views_teams.get_my_teams, name="get_my_teams"),
+    path('team/addMember', views_teams.add_team_member, name="add_team_member"),
+    path('team/addService', views_teams.add_service, name="add_service"),
+    path('team/addService', views_teams.add_service, name="add_service"),
+    path('team/getMembers', views_teams.get_team_members, name = "get_team_members"),
 
     # Elements
     path('createFlashDeck', views_elements.create_flashdeck, name="create_flashdeck"),

@@ -1,0 +1,7 @@
+Hi {{ user_name }},
+
+We’d love to have you on our team {{ team_name }}! Click the link below to join:
+
+http://127.0.0.1:8000/team/addService?team_id={{team_id}}&user_id={{user_id}}
+
+Looking forward to collaborating with you!
