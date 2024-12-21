@@ -47,24 +47,24 @@ def get_my_teams(request):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def add_team_member(request):
-    user_id = request.query_params.get('user_id', None)
+    email = request.query_params.get('email', None)
     team_id = request.query_params.get('team_id', None)
 
-    if not user_id or not team_id:
-        return Response({"Invalid JSON Format": "user_id or team_id missing"})
-    
+    if not email or not team_id:
+        return Response({"Invalid JSON Format": "email or team_id missing"})
+
     try:
         team = Team.objects.get(id=team_id)
     except:
         return Response("Invalid team_id provided.")
 
     try:
-        user = User.objects.get(id = user_id)
+        user = User.objects.get(email=email)
     except:
-        return Response("Invalid user_id provided.")
+        return Response({"error": "Wrong email user not found."}, status=status.HTTP_400_BAD_REQUEST)
     
     data = {
-        'user_id': user_id,
+        'user_id': user.pk,
         'user_name': f"{user.first_name} {user.last_name}",
         'team_id': team_id,
         'team_name': team.name

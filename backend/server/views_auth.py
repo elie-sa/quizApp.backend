@@ -8,7 +8,7 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from .models import EmailConfirmationToken
-from .serializers import PasswordChangeSerializer, UserSerializer
+from .serializers import PasswordChangeSerializer, UserSerializer, ChangePasswordSerializer
 from django.core.mail import send_mail
 from django.template.loader import get_template
 import pyotp
@@ -262,3 +262,23 @@ def change_phone_number(request):
     user.profile.save()
     
     return Response({'message': "Your phone number has been updated successfully"}, status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    serializer = ChangePasswordSerializer(data=request.data)
+
+    if serializer.is_valid():
+        old_password = serializer.validated_data['old_password']
+        if not user.check_password(old_password):
+            return Response({"old_password": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        new_password = serializer.validated_data['new_password']
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

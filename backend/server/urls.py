@@ -18,6 +18,7 @@ urlpatterns = [
     # Settings Page
     path('user/changePhoneNumber', views_auth.change_phone_number, name="change_phone_number"),
     path('user/changeName', views_auth.change_user_name, name="change_user_name"),
+    path('user/changePassword', views_auth.change_password, name="change_password"),
 
 
     # GET APIs
