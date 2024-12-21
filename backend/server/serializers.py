@@ -83,11 +83,12 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = ['name', 'creation_date', 'members']
 
 class NotebookSerializer(serializers.ModelSerializer):
+    is_bookmarked = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Notebook
-        fields = ['id', 'title', 'color', 'rating', 'creation_date', 'user_creator', 'team_creator', 'bookmark_users', 'courses', 'public_access']
-
+        fields = ['id', 'title', 'color', 'rating', 'creation_date', 'user_creator', 
+                  'team_creator', 'public_access', 'is_bookmarked']
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Course, Major, Notebook, Rating, Team
-from django.db.models import Q
+from django.db.models import Q, Exists, OuterRef
 from .serializers import NotebookSerializer
 from rest_framework import status
 
@@ -81,6 +81,7 @@ def team_create_notebook(request):
 @authentication_classes([SessionAuthentication, JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def get_public_notebooks(request):
+    user = request.user
     search_entry = request.query_params.get("search_entry", None)
     major_id = request.query_params.get('major_id', None)
     course_id = request.query_params.get('course_id', None)
@@ -98,8 +99,19 @@ def get_public_notebooks(request):
 
     query &= Q(public_access=True)
 
-    notebooks = Notebook.objects.filter(query).order_by('title')
-    return Response(NotebookSerializer(notebooks, many=True).data, status=status.HTTP_200_OK)
+    notebooks = (
+        Notebook.objects.filter(query)
+        .annotate(is_bookmarked=Exists(
+            Notebook.bookmark_users.through.objects.filter(
+                notebook_id=OuterRef('pk'),
+                user_id=user.id
+            )
+        ))
+        .order_by('title')
+    )
+
+    serialized_notebooks = NotebookSerializer(notebooks, many=True).data
+    return Response(serialized_notebooks, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, JWTAuthentication])
