@@ -57,7 +57,7 @@ def team_create_notebook(request):
     if not team.members.filter(id=user.id).exists():
         return Response({"forbidden": "User does not belong to this team."}, status=status.HTTP_403_FORBIDDEN)
 
-    testNotebook = Notebook.objects.filter(user_creator = user, title = title)
+    testNotebook = Notebook.objects.filter(team_creator = team, title = title)
     if testNotebook:
         return Response({"title": "This team already has a notebook with this name. Please choose a different name."}, status=status.HTTP_400_BAD_REQUEST)
 
