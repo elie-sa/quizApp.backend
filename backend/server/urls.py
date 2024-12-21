@@ -15,6 +15,11 @@ urlpatterns = [
     path('user/verifyOtp', views_auth.verify_otp, name="verify_otp"),
     path('user/changeForgottenPassword', views_auth.change_forgotten_password, name="change_forgotten_password"),
 
+    # Settings Page
+    path('user/changePhoneNumber', views_auth.change_phone_number, name="change_phone_number"),
+    path('user/changeName', views_auth.change_user_name, name="change_user_name"),
+
+
     # GET APIs
     path('majors', views.get_majors, name="get_majors"),
     path('courses', views.get_courses, name="get_courses"),

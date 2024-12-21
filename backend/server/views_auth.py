@@ -219,3 +219,46 @@ def get_user_info(request):
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+# Settings Page
+
+@api_view(['PUT'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def change_user_name(request):
+    user = request.user
+    first_name = request.query_params.get('first_name', None)
+    last_name = request.query_params.get('last_name', None)
+
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    user.save() 
+    
+    response_data = {
+        "message": "User name updated successfully",
+        "user": {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "email": user.email,
+        }
+    }
+    
+    return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def change_phone_number(request):
+    user = request.user
+    try:
+        new_phone_number = request.data["phone_number"]
+    except:
+        return Response("JSON Error. phone_number field not provided.")
+    user.profile.phone_number = new_phone_number
+    user.profile.save()
+    
+    return Response({'message': "Your phone number has been updated successfully"}, status=status.HTTP_200_OK)
