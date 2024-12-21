@@ -44,6 +44,7 @@ urlpatterns = [
     path('team/addService', views_teams.add_service, name="add_service"),
     path('team/addService', views_teams.add_service, name="add_service"),
     path('team/getMembers', views_teams.get_team_members, name = "get_team_members"),
+    path('team/exit', views_teams.exit_team, name = "exit_team"),
 
     # Elements
     path('createFlashDeck', views_elements.create_flashdeck, name="create_flashdeck"),

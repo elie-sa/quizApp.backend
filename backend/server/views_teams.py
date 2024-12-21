@@ -103,3 +103,19 @@ def get_team_members(request):
     
     serializer = TeamSerializer(team)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def exit_team(request):
+    user = request.user
+    team_id = request.query_params.get('team_id')
+
+    try:
+        team = Team.objects.get(id = team_id)
+    except:
+        return Response({"error": "Invalid team_id provided"})
+    
+    team.members.remove(user)
+    team.save()
+    return Response({"message": "You have been successfully removed from the team."}, status=status.HTTP_200_OK)
