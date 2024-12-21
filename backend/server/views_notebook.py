@@ -220,3 +220,23 @@ def delete_user_notebook(request):
         return Response({"messsage": "Notebook successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
     
     return Response({"error": "The user is not the notebook owner"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_team_notebook(request):
+    notebook_id = request.query_params.get('notebook_id', None)
+    
+    if not notebook_id:
+        return Response({"error": "Notebook ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        notebook = Notebook.objects.get(id = notebook_id)
+    except:
+        return Response("Invalid notebook_id provided", status=status.HTTP_400_BAD_REQUEST) 
+
+    team = notebook.team_creator
+    if not team.members.filter(id=request.user.id).exists():
+        return Response({"error": "You do not have permission to delete this notebook."}, status=status.HTTP_403_FORBIDDEN)
+    
+    notebook.delete()
+    return Response({"message": "Notebook deleted successfully."}, status=status.HTTP_200_OK)
